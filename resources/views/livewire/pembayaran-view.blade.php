@@ -42,26 +42,25 @@
         }
     </style>
 
-    <div class="overflow-x-auto bg-white rounded-lg shadow relative">
+    <div class="overflow-x-auto bg-white dark:bg-zinc-800 rounded-lg shadow relative">
         <!-- Tabel untuk Data civilians -->
-        <table class="min-w-full border border-gray-200">
-            <thead class="bg-gray-100">
-                <th class="px-4 py-2 border">Jenis Iuran</th>
-                <th class="px-4 py-2 border">Nama Warga</th>
-                <th class="px-4 py-2 border">Total Dibayar</th>
-                <th class="px-4 py-2 border">Aksi</th>
+        <table class="min-w-full">
+            <thead class="bg-gray-100 dark:bg-zinc-800 text-gray-800 dark:text-white">
+                <th class="px-4 py-2 text-center">Jenis Iuran</th>
+                <th class="px-4 py-2 text-center">Nama Warga</th>
+                <th class="px-4 py-2 text-center">Total Dibayar</th>
+                <th class="px-4 py-2 text-center">Aksi</th>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-500">
-                @foreach($subscriptions as $subscription)
+            <tbody class="bg-white divide-y divide-gray-200 dark:bg-zinc-800">
+                @foreach ($subscriptions as $subscription)
                     @php
                         $subs = $subscription['model'];
                         $availableMonths = $subscription['availableMonths'];
                     @endphp
                     <tr wire:key="sub-{{ $subs->id }}"
-                        class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
-                        >
+                        class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td class="px-4 py-2 border text-left">
-                            {{ $subs->subscription->name }} - 
+                            {{ $subs->subscription->name }} -
                             {{ number_format($subs->subscription->amount, 0, ',', '.') }}
                         </td>
                         <td class="px-4 py-2 border text-left">{{ $subs->civilian->full_name }}</td>
@@ -70,42 +69,38 @@
                         </td>
                         <td class="px-6 py-4 m-auto whitespace-nowrap dark:text-gray-300" x-data="{ open: false }">
                             <!-- Trigger Button -->
-                            <button
-                                @click="open = !open"
-                                type="button"
-                                class="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
-                            >
+                            <button @click="open = !open" type="button"
+                                class="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none">
                                 Pilih Bulan
                                 <span class="ml-2 bg-gray-100 rounded-full px-2 py-0.5 text-xs">
                                     {{ count($subs->paid_months ?? []) }} terpilih
                                 </span>
-                                <svg class="-mr-1 ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                <svg class="-mr-1 ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                        clip-rule="evenodd" />
                                 </svg>
                             </button>
-                        
+
                             <!-- Dropdown Menu -->
-                            <div
-                                x-show="open"
-                                @click.away="open = false"
+                            <div x-show="open" @click.away="open = false"
                                 x-transition:enter="transition ease-out duration-100"
                                 x-transition:enter-start="transform opacity-0 scale-95"
                                 x-transition:enter-end="transform opacity-100 scale-100"
                                 x-transition:leave="transition ease-in duration-75"
                                 x-transition:leave-start="transform opacity-100 scale-100"
                                 x-transition:leave-end="transform opacity-0 scale-95"
-                                class="origin-top-right relative left-4 mt-2 w-56 z-50 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
-                            >
+                                class="origin-top-right relative left-4 mt-2 w-56 z-50 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                                 <div class="py-1 max-h-60 overflow-y-auto relative">
                                     <!-- Month List -->
-                                    @foreach($availableMonths as $monthKey => $monthLabel)
-                                        <label class="flex items-center px-4 py-2 text-sm cursor-pointer hover:bg-gray-50">
-                                            <input 
-                                                type="checkbox"
+                                    @foreach ($availableMonths as $monthKey => $monthLabel)
+                                        <label
+                                            class="flex items-center px-4 py-2 text-sm cursor-pointer hover:bg-gray-50">
+                                            <input type="checkbox"
                                                 {{ in_array($monthKey, $subs->paid_months ?? []) ? 'checked' : '' }}
                                                 wire:change="togglePayment({{ $subs->id }}, '{{ $monthKey }}')"
-                                                class="rounded text-green-600 focus:ring-green-500 pr-3"
-                                            >
+                                                class="rounded text-green-600 focus:ring-green-500 pr-3">
                                             <span class="text-gray-700 mx-2">{{ $monthLabel }}</span>
                                         </label>
                                     @endforeach
@@ -118,11 +113,6 @@
         </table>
     </div>
 
-    
+
 
 </div>
-
-@assets
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-@endassets
-

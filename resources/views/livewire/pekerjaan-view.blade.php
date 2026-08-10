@@ -42,65 +42,55 @@
     </style>
 
     {{-- FILTER --}}
-    <div class="p-4 mb-6 bg-white rounded-lg shadow">
+    <div class="p-4 mb-6 bg-white dark:bg-zinc-800 rounded-lg shadow">
         <div class="flex flex-wrap gap-4 items-end">
 
             <!-- Selectbox untuk filter pekerjaan -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Pekerjaan</label>
-                <select 
-                    wire:model="selectedJob" 
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                    >
+                <label class="block text-sm font-medium text-gray-700 dark:text-white">Pekerjaan</label>
+                <select wire:model="selectedJob"
+                    class="appearance-none mt-1 block w-full rounded-md border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 shadow-sm text-gray-700 dark:text-white">
                     <option value="">Semua Pekerjaan</option>
-                    @foreach($jobs as $job)
+                    @foreach ($jobs as $job)
                         <option value="{{ $job->id }}">{{ $job->job_place }}</option>
                     @endforeach
                 </select>
             </div>
-             
-     
+
+
             <!-- Input Nama Warga -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Nama Warga</label>
-                <input
-                    type="text"
-                    wire:model.debounce.500ms="searchName"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                    placeholder="Cari nama warga..."
-                >
+                <label class="block text-sm font-medium text-gray-700 dark:text-white">Nama Warga</label>
+                <input type="text" wire:model.debounce.500ms="searchName"
+                    class="mt-1 block w-full rounded-md border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-300 shadow-sm"
+                    placeholder="Cari nama warga...">
             </div>
-     
+
             <!-- Tombol Filter -->
             <div class="inline-block  bg-blue-600 text-white rounded hover:bg-blue-700">
-                <button 
-                    wire:click="applyFilter"
-                    wire:loading.attr="disabled"
-                    wire:target="applyFilter"
-                    class="inline-block px-4 py-2"
-                >
+                <button wire:click="applyFilter" wire:loading.attr="disabled" wire:target="applyFilter"
+                    class="inline-block px-4 py-2">
                     {{-- Normal --}}
                     <span wire:loading.remove>Terapkan Filter</span>
 
                     {{-- Saat loading --}}
                     <span wire:loading class="flex items-center">
-                        <div
-                            class="flex items-center"
-                        >
+                        <div class="flex items-center">
                             <svg class="animate-spin w-[0.8rem] mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor"
-                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
+                                </path>
                             </svg>
                             Terapkan Filter
-                        </div>     
+                        </div>
                     </span>
                 </button>
             </div>
-     
-             <!-- Tombol Reset -->
-             {{-- <button 
+
+            <!-- Tombol Reset -->
+            {{-- <button 
                  wire:click="resetFilters"
                  class="text-gray-600 hover:text-gray-800 ml-2 text-sm border border-gray-300 px-3 py-2 rounded-lg"
              >
@@ -110,42 +100,48 @@
     </div>
 
     <!-- TABEL DATA -->
-    <div class="overflow-x-auto bg-white rounded-lg shadow">
-        <table class="min-w-full border border-gray-200">
-            <thead class="bg-gray-100">
-                <th class="px-4 py-2 border">Tempat Kerja</th>
-                <th class="px-4 py-2 border">Nama</th>
-                <th class="px-4 py-2 border">Tahun Masuk</th>
-                <th class="px-4 py-2 border">Tahun Berlangsung</th>
+    <div class="overflow-x-auto bg-gray-100 dark:bg-zinc-600 rounded-lg shadow">
+        <table class="min-w-full border-zinc-700">
+            <thead class="bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-white">
+                <th class="px-4 py-2">Tempat Kerja</th>
+                <th class="px-4 py-2">Nama</th>
+                <th class="px-4 py-2">Tahun Masuk</th>
+                <th class="px-4 py-2">Tahun Berlangsung</th>
             </thead>
             <tbody>
                 @forelse ($civilians as $civilian)
-                    <tr>
-                        <td class="px-4 py-2 border text-center">
-                            <div class="flex flex-wrap gap-1 text-blue-500">
-                                @foreach($civilian->civilian_jobs as $job)
+                    <tr class="text-gray-800 dark:text-white">
+                        <td class="px-4 py-2 text-center">
+                            <div class="text-center text-blue-400">
+                                @foreach ($civilian->civilian_jobs as $job)
                                     {{ $job->job_place }}
-                                    @if(!$loop->last), @endif
+                                    @if (!$loop->last)
+                                        ,
+                                    @endif
                                 @endforeach
                             </div>
                         </td>
-                        <td class="px-4 py-2 border">{{ $civilian->full_name }}</td>
-                        <td class="px-4 py-2 border text-center">
-                            @foreach($civilian->civilian_jobs as $job)
+                        <td class="px-4 py-2 text-center">{{ $civilian->full_name }}</td>
+                        <td class="px-4 py-2 text-center">
+                            @foreach ($civilian->civilian_jobs as $job)
                                 {{ $job->pivot->accepted_date }}
-                                @if(!$loop->last)<br>@endif
+                                @if (!$loop->last)
+                                    <br>
+                                @endif
                             @endforeach
                         </td>
-                        <td class="px-4 py-2 border text-center">
-                            @foreach($civilian->civilian_jobs as $job)
+                        <td class="px-4 py-2 text-center">
+                            @foreach ($civilian->civilian_jobs as $job)
                                 {{ $job->pivot->retirement_date }}
-                                @if(!$loop->last)<br>@endif
+                                @if (!$loop->last)
+                                    <br>
+                                @endif
                             @endforeach
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                             Tidak ada data yang ditemukan
                         </td>
                     </tr>
@@ -153,11 +149,7 @@
             </tbody>
         </table>
     </div>
-    
+
 
     {{ $civilians->links() }}
 </div>
-
-@assets
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-@endassets

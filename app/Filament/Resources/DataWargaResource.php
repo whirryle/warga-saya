@@ -82,7 +82,7 @@ class DataWargaResource extends Resource
                     ->label('Alamat'),
                 Select::make('married_status')
                     ->required()
-                    ->label('Status pernikahan')
+                    ->label('Status Pernikahan')
                     ->options([
                         false => "Belum menikah",
                         true => "Sudah menikah"
@@ -208,7 +208,7 @@ class DataWargaResource extends Resource
                 TextColumn::make('home_address')
                     ->label('Alamat'),
                 TextColumn::make('married_status')
-                    ->label('Status pernikahan')
+                    ->label('Status Pernikahan')
                     ->formatStateUsing(function ($state, Civilian $civilian) {
                         if ($civilian->married_status == false) {
                             return 'Belum menikah';

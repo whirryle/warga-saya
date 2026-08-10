@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Providers;
+use Carbon\Carbon;
 
 use Illuminate\Support\ServiceProvider;
 use App\Models\CivilianPivotSubscription;
@@ -21,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-            
+        Carbon::setLocale('id');
     }
 }

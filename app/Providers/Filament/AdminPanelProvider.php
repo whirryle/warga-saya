@@ -33,11 +33,11 @@ class AdminPanelProvider extends PanelProvider
         // Tambahkan jQuery dan Select2
         FilamentAsset::register([
             Js::make('jquery', 'https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js'), // jQuery
-            
+
         ]);
 
         return $panel
-            
+
             ->default()
             ->id('admin')
             ->path('')
@@ -45,6 +45,8 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Blue,
             ])
+            ->darkMode(true)
+            ->viteTheme('resources/css/app.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
