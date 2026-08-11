@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DataPekerjaanResource\Pages;
 use App\Filament\Resources\DataPekerjaanResource\RelationManagers;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Support\Facades\Auth;
 
 class DataPekerjaanResource extends Resource
 {
@@ -72,5 +73,14 @@ class DataPekerjaanResource extends Resource
             // 'create' => Pages\CreateDataPekerjaan::route('/create'),
             // 'edit' => Pages\EditDataPekerjaan::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        // super admin dapat melihat menu ini (Data Pekerjaan)
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        return $user?->isSuperAdmin() ?? false;
     }
 }

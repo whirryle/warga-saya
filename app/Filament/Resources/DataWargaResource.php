@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\DataWargaResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DataWargaResource\RelationManagers;
+use Illuminate\Support\Facades\Auth;
 
 class DataWargaResource extends Resource
 {
@@ -252,5 +253,14 @@ class DataWargaResource extends Resource
             'create' => Pages\CreateDataWarga::route('/create'),
             'edit' => Pages\EditDataWarga::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        // super admin dapat melihat menu ini (Data Warga)
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        return $user?->isSuperAdmin() ?? false;
     }
 }

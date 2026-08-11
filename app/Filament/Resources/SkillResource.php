@@ -17,6 +17,7 @@ use App\Filament\Resources\SkillResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SkillResource\RelationManagers;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 
 class SkillResource extends Resource
 {
@@ -76,5 +77,13 @@ class SkillResource extends Resource
             // 'create' => Pages\CreateSkill::route('/create'),
             // 'edit' => Pages\EditSkill::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        return $user?->isSuperAdmin() ?? false;
     }
 }

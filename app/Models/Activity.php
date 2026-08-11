@@ -17,6 +17,11 @@ class Activity extends Model
         'category_id',
     ];
 
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'activity_user');
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

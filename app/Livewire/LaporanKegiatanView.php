@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Category;
 use App\Models\Civilian;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 
 class LaporanKegiatanView extends Component
 {
@@ -39,12 +40,22 @@ class LaporanKegiatanView extends Component
 
     public function render()
 {
+    /** @var \App\Models\User|null $user */
+    $user = Auth::user();
     $categories = Category::all();
 
         // 1) bangun query dasar
         $query = Civilian::with(['categories.activities','activities']);
 
-        // 2) filter
+        // 2> Jika bukan super admin, batasi hanya menampilkan warga
+        // yang terhubung dengan kegiatan yang diurus oleh user yang login
+        if ($user && !$user->isSuperAdmin()) {
+            $query->whereHas('activities', function($q) use ($user) {
+                $q->WhereIn('activites.id', $user->activites()->pluck('id'));
+            });
+        }
+
+        // 3) filter
         if ($this->selectedCategory) {
             $query->whereHas('categories', fn($q) =>
                 $q->where('categories.id', $this->selectedCategory)
@@ -54,14 +65,14 @@ class LaporanKegiatanView extends Component
             $query->where('full_name','like',"%{$this->searchName}%");
         }
 
-        // 1) Paginate
+        // 4) Paginate
         $paginator = $query->paginate($this->perPage)
                            ->appends([
                               'selectedCategory' => $this->selectedCategory,
                               'searchName'       => $this->searchName,
                            ]);
 
-        // 2) Transform items in the current page
+        // 5) Transform items in the current page
         $paginator->getCollection()->transform(function($civ) {
             $cats = $civ->categories->isEmpty()
                 ? collect([(object)['id'=>null,'name'=>'-','activities'=>collect()]])

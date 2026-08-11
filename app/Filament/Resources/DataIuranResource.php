@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\DataIuranResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DataIuranResource\RelationManagers;
+use Illuminate\Support\Facades\Auth;
 
 class DataIuranResource extends Resource
 {
@@ -129,5 +130,14 @@ class DataIuranResource extends Resource
             // 'create' => Pages\CreateDataIuran::route('/create'),
             // 'edit' => Pages\EditDataIuran::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        // super admin dapat melihat menu ini (Data Iuran)
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        return $user?->isSuperAdmin() ?? false;
     }
 }

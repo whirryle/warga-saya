@@ -13,6 +13,7 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DataAktifitasResource\Pages;
 use App\Filament\Resources\DataAktifitasResource\RelationManagers;
@@ -86,5 +87,19 @@ class DataAktifitasResource extends Resource
             // 'create' => Pages\CreateDataAktifitas::route('/create'),
             // 'edit' => Pages\EditDataAktifitas::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        if ($user && $user->isSuperAdmin()) {
+            return parent::getEloquentQuery();
+        }
+
+        return parent::getEloquentQuery()->whereHas('users', function ($query) use ($user) {
+            $query->where('users.id', $user?->id);
+        });
     }
 }

@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DataTanggunganResource\Pages;
 use App\Filament\Resources\DataTanggunganResource\RelationManagers;
+use Illuminate\Support\Facades\Auth;
 
 class DataTanggunganResource extends Resource
 {
@@ -119,5 +120,14 @@ class DataTanggunganResource extends Resource
             // 'create' => Pages\CreateDataTanggungan::route('/create'),
             // 'edit' => Pages\EditDataTanggungan::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        // super admin dapat melihat menu ini (Data Tanggungan)
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        return $user?->isSuperAdmin() ?? false;
     }
 }

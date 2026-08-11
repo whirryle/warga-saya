@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\IuranResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\IuranResource\RelationManagers;
+use Illuminate\Support\Facades\Auth;
 
 class IuranResource extends Resource
 {
@@ -90,5 +91,12 @@ class IuranResource extends Resource
             // 'create' => Pages\CreateIuran::route('/create'),
             // 'edit' => Pages\EditIuran::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user?->isSuperAdmin() ?? false;
     }
 }
