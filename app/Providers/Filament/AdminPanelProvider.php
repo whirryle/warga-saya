@@ -9,11 +9,9 @@ use Pages\PaymentTracker;
 use Filament\PanelProvider;
 // use App\Livewire\ShowCivilians;
 use Filament\Facades\Filament;
-use Filament\Support\Assets\Js;
 use Filament\Support\Assets\Css;
 use Filament\Support\Colors\Color;
 use Filament\Http\Middleware\Authenticate;
-use Filament\Support\Facades\FilamentAsset;
 // use App\Filament\Pages\LaporanStatusPernikahan;
 use App\Http\Livewire\LaporanStatusPernikahan;
 use Illuminate\Session\Middleware\StartSession;
@@ -30,12 +28,6 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        // Tambahkan jQuery dan Select2
-        FilamentAsset::register([
-            Js::make('jquery', 'https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js'), // jQuery
-
-        ]);
-
         return $panel
 
             ->default()
@@ -63,7 +55,6 @@ class AdminPanelProvider extends PanelProvider
                 'Iuran',
                 'Laporan',
             ])
-            ->spa()
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

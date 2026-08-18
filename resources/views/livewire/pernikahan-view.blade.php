@@ -127,7 +127,9 @@
                         Belum menikah
                     </td>
                     @endif
-                    <td class="px-4 py-2 text-center text-gray-800 dark:text-white">{{ $civilian->full_name }}</td>
+                    <td class="px-4 py-2 text-center text-gray-800 dark:text-white">
+                        <x-highlight :text="$civilian->full_name" :query="$appliedName" />
+                    </td>
                     <td class="px-4 py-2 text-center text-gray-800 dark:text-white">{{ \Carbon\Carbon::parse($civilian->born_date)->age . ' tahun' }}</td>
                     <td class="px-4 py-2 text-center text-gray-800 dark:text-white">
                         @if ($civilian->gender)

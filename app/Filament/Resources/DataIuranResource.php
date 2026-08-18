@@ -62,9 +62,16 @@ class DataIuranResource extends Resource
                     // ->relationship('subscription', 'name')
                     ->label('Nama warga')
                     ->required()
-                    ->options(function (callable $get) {
+                    ->options(function (callable $get, ?CivilianPivotSubscription $record) {
                         // Ambil data civilian berdasarkan subscription yang dipilih
-                        return $get('civilians') ?? [];
+                        $options = $get('civilians') ?? [];
+
+                        // Saat edit: pastikan warga yang sedang terpilih tetap tampil
+                        if ($record && $record->civilian_id) {
+                            $options[$record->civilian_id] = $record->civilian->full_name ?? $record->civilian_id;
+                        }
+
+                        return $options;
                     })
                     ->disabled(function (callable $get) {
                         // Nonaktifkan select box jika subscription belum dipilih
@@ -127,8 +134,8 @@ class DataIuranResource extends Resource
     {
         return [
             'index' => Pages\ListDataIurans::route('/'),
-            // 'create' => Pages\CreateDataIuran::route('/create'),
-            // 'edit' => Pages\EditDataIuran::route('/{record}/edit'),
+            'create' => Pages\CreateDataIuran::route('/create'),
+            'edit' => Pages\EditDataIuran::route('/{record}/edit'),
         ];
     }
 

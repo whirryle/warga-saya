@@ -121,7 +121,7 @@
                                 @endforeach
                             </div>
                         </td>
-                        <td class="px-4 py-2 text-center">{{ $civilian->full_name }}</td>
+                        <td class="px-4 py-2 text-center"><x-highlight :text="$civilian->full_name" :query="$searchName" /></td>
                         <td class="px-4 py-2 text-center">
                             @foreach ($civilian->civilian_jobs as $job)
                                 {{ $job->pivot->accepted_date }}

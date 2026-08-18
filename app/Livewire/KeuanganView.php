@@ -67,10 +67,10 @@ class KeuanganView extends Component
             ->when($this->selectedSubscription, fn($q) => $q->where('subscription_id', $this->selectedSubscription))
             ->orderBy('created_at');
 
-        // mulai balance dari initial balance
-        $sub = Subscription::find($this->selectedSubscription);
-        $balance = $sub->initial_balance ?? 0;
-        
+        // saldo awal diwakili oleh record Expense "Saldo Awal" (income),
+        // jadi perhitungan dimulai dari 0 untuk mencegah double-counting.
+        $balance = 0;
+
         $this->transactions = $query->get()
             ->map(function ($expense) use (&$balance) {
                 $description = $expense->is_income
@@ -124,6 +124,9 @@ class KeuanganView extends Component
 
     public function saveInitialBalance()
     {
+        // Bersihkan pemisah ribuan (mis. "10.000" -> 10000)
+        $this->initialBalance = (float) preg_replace('/[^0-9]/', '', (string) $this->initialBalance);
+
         $this->validate([
             'initialBalance' => 'required|numeric',
         ]);
@@ -157,6 +160,9 @@ class KeuanganView extends Component
     // Method untuk menyimpan transaksi
     public function saveTransaction()
     {
+        // Bersihkan pemisah ribuan (mis. "10.000" -> 10000)
+        $this->transactionAmount = (float) preg_replace('/[^0-9]/', '', (string) $this->transactionAmount);
+
         $this->validate([
             'transactionAmount' => 'required|numeric',
             'transactionDescription' => 'required',

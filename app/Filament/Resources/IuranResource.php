@@ -40,7 +40,9 @@ class IuranResource extends Resource
                 TextInput::make('amount')
                     ->required()
                     ->prefix('Rp.')
-                    ->label('Jumlah nominal'),
+                    ->label('Jumlah nominal')
+                    ->mask('999.999.999')
+                    ->dehydrateStateUsing(fn ($state) => preg_replace('/[^0-9]/', '', (string) $state)),
                 Select::make('category_id')
                     ->relationship('categories', 'name')
                     ->required()
@@ -61,7 +63,6 @@ class IuranResource extends Resource
                     ->searchable(),
                 TextColumn::make('category.name')
                     ->label('Kategori')
-                    ->money('IDR')
                     ->searchable(),
             ])
             ->filters([

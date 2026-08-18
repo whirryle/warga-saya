@@ -23,5 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Carbon::setLocale('id');
+
+        \Filament\Forms\Components\DateTimePicker::$defaultDateDisplayFormat = 'd/m/Y';
     }
 }

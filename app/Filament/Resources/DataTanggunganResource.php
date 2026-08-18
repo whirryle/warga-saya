@@ -81,11 +81,16 @@ class DataTanggunganResource extends Resource
                     }),
                 TextColumn::make('gender')
                     ->label('Jenis kelamin')
-                    ->formatStateUsing(function ($state, Liability $liability) {
-                        if ($liability->gender == false) {
+                    ->formatStateUsing(function ($state) {
+                        if ($state === 'Pria') {
                             return 'Pria';
                         }
-                        return 'Wanita';
+
+                        if (in_array($state, [true, 1, '1', 'Wanita'], true)) {
+                            return 'Wanita';
+                        }
+
+                        return 'Pria';
                     }),
                 TextColumn::make('last_education')
                     ->label('Pendidikan terakhir'),

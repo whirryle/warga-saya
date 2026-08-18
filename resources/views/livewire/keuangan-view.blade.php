@@ -92,7 +92,10 @@
                                     <label
                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jumlah
                                         (Rp)</label>
-                                    <input type="number" wire:model="transactionAmount"
+                                    <input type="text" inputmode="numeric" wire:model="transactionAmount"
+                                        x-data
+                                        x-init="$nextTick(() => { $el.value = formatRp($el.value); })"
+                                        @input="$el.value = formatRp($el.value)"
                                         class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                         placeholder="0">
                                     @error('transactionAmount')
@@ -154,10 +157,13 @@
                             x-transition:leave="transition ease-in duration-150"
                             x-transition:leave-start="opacity-100 translate-y-0"
                             x-transition:leave-end="opacity-0 translate-y-1" @click.outside="showForm = false"
-                            class="absolute mt-2 bg-white border rounded shadow p-4 w-64">
+                            class="absolute z-10 mt-2 w-64 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 p-4">
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jumlah
                                 (Rp)</label>
-                            <input type="number" wire:model="initialBalance"
+                            <input type="text" inputmode="numeric" wire:model="initialBalance"
+                                x-data
+                                x-init="$nextTick(() => { $el.value = formatRp($el.value); })"
+                                @input="$el.value = formatRp($el.value)"
                                 class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 placeholder="0">
 
@@ -215,7 +221,7 @@
                 @foreach ($transactions as $trx)
                     <tr class="hover:bg-gray-50 dark:hover:bg-zinc-700 dark:text-gray-100">
                         <td class="px-4 py-2 whitespace-nowrap">
-                            {{ \Carbon\Carbon::parse($trx['created_at'])->format('d M Y') }}
+                            {{ \Carbon\Carbon::parse($trx['created_at'])->format('d/m/Y') }}
                         </td>
                         <td class="px-4 py-2">
                             {{ $trx['description'] }}
@@ -253,5 +259,13 @@
 
 
 </div>
+
+{{-- Helper format angka ribuan Indonesia (10.000) --}}
+<script>
+    function formatRp(value) {
+        const d = String(value ?? '').replace(/\D/g, '');
+        return d ? Number(d).toLocaleString('id-ID') : '';
+    }
+</script>
 
 {{-- works --}}

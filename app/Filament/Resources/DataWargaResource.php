@@ -202,7 +202,7 @@ class DataWargaResource extends Resource
                 TextColumn::make('born_place')
                     ->label('Tempat tanggal lahir')
                     ->formatStateUsing(function ($state, Civilian $civilian) {
-                        return $civilian->born_place . ', ' . Carbon::parse($civilian->born_date)->format('j F o');
+                        return $civilian->born_place . ', ' . Carbon::parse($civilian->born_date)->format('d/m/Y');
                     }),
                 TextColumn::make('nik')
                     ->label('NIK'),

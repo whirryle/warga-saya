@@ -51,7 +51,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-white">Kategori</label>
                 <select wire:model.defer="selectedCategory"
                     class="appearance-none mt-1 block w-full rounded-md border border-gray-300 dark:border-zinc-600 shadow-sm bg-white dark:bg-zinc-700 text-gray-600 dark:text-white">
-                    <!-- <option value="" default class="">Semua Kategori</option> -->
+                    <option value="">Semua Kategori</option>
                     @foreach ($categories as $category)
                         <option value="{{ $category->id }}" class="text-gray-600 dark:text-gray-200">{{ $category->name }}
                         </option>
@@ -135,7 +135,9 @@
                                 @endforeach
                             </div>
                         </td>
-                        <td class="px-4 py-2 text-center text-gray-800 dark:text-white">{{ $civilian->full_name }}</td>
+                        <td class="px-4 py-2 text-center text-gray-800 dark:text-white">
+                            <x-highlight :text="$civilian->full_name" :query="$appliedSearch" />
+                        </td>
                         <td class="px-4 py-2 text-center text-gray-800 dark:text-white">
                             {{ \Carbon\Carbon::parse($civilian->born_date)->age }} tahun</td>
                         <td class="px-4 py-2 text-center text-gray-800 dark:text-white">

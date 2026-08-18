@@ -51,7 +51,7 @@
                                         {{ $data->firstItem() + $civIndex }}.
                                     </td>
                                     <td rowspan="{{ $rowspanW }}" class="px-4 py-2 text-center">
-                                        {{ $civ['full_name'] }}
+                                        <x-highlight :text="$civ['full_name']" :query="$searchName" />
                                     </td>
                                     @php $displayW = false; @endphp
                                 @endif
@@ -75,6 +75,19 @@
             </tbody>
         </table>
     </div>
+    {{-- Opsi jumlah data per halaman --}}
+    <div class="mt-4 px-4 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-200">
+        <label>Tampilkan</label>
+        <select wire:model.live="perPage"
+            class="rounded-md border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-gray-700 dark:text-white px-2 py-1">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+        </select>
+        <span>data per halaman</span>
+    </div>
+
     {{-- pagination links --}}
     <div class="mt-4 px-4">
         {{ $data->links() }}
