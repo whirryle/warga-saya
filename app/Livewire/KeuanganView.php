@@ -144,7 +144,9 @@ class KeuanganView extends Component
             'is_income' => true,
             'subscription_id' => $this->selectedSubscription,
         ]);
-        
+
+        $initialBalanceAmount = $this->initialBalance;
+
         // Tandai bahwa saldo awal sudah diatur
         $this->hasInitialBalance = true;
 
@@ -152,7 +154,9 @@ class KeuanganView extends Component
         $this->initialBalance = null;
 
         // Refresh data transaksi
-        $this->applyFilter(); 
+        $this->applyFilter();
+
+        $this->logActivity("Menetapkan saldo awal iuran sebesar Rp" . number_format($initialBalanceAmount, 0, ',', '.'), 'SaldoAwal');
     }
 
 
@@ -191,8 +195,27 @@ class KeuanganView extends Component
             'subscription_id' => $this->selectedSubscription,
         ]);
 
+        $this->logActivity(
+            ($isIncome ? 'Pemasukan' : 'Pengeluaran') . ' sebesar Rp' . number_format($this->transactionAmount, 0, ',', '.') . ' (' . $this->transactionDescription . ')',
+            $isIncome ? 'Pemasukan' : 'Pengeluaran'
+        );
+
         $this->reset(['transactionAmount', 'transactionDescription']);
         $this->applyFilter();
+    }
+
+    private function logActivity(string $description, string $event = 'Transaksi'): void
+    {
+        activity('Keuangan')
+            ->causedBy(auth()->user())
+            ->event($event)
+            ->tap(function ($activity) {
+                $activity->role = auth()->user()?->role;
+                $activity->ip_address = request()->ip();
+                $activity->user_agent = substr((string) request()->userAgent(), 0, 500);
+                $activity->properties = null;
+            })
+            ->log($description);
     }
 
     public function render()

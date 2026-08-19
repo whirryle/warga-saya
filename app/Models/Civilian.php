@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Category;
 use App\Models\Liability;
 use App\Models\CivilianJob;
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\CivilianPivotSubscription;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Civilian extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
     protected $table = 'civilians';
     protected $fillable = [
         'full_name',
@@ -83,5 +84,10 @@ class Civilian extends Model
             ->using(CivilianPivotActivity::class)
             ->withPivot('progress')
             ->withTimestamps();
+    }
+
+    protected function activityLogName(): string
+    {
+        return 'Data Warga';
     }
 }

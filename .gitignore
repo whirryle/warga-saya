@@ -25,3 +25,5 @@ yarn-error.log
 *.sql.gz
 *.dump
 *.bak
+*.md
+!README.md

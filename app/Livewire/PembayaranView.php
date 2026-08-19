@@ -75,6 +75,21 @@ class PembayaranView extends Component
         $pivot->paid_months = array_values(array_unique($currentMonths));
         $pivot->save();
     });
+
+    $status = in_array($monthKey, $pivot->paid_months ?? []) ? 'dibayar' : 'dibatalkan';
+    $monthLabel = Carbon::parse($monthKey)->translatedFormat('F Y');
+
+    activity('Pembayaran Iuran')
+        ->causedBy(auth()->user())
+        ->performedOn($pivot)
+        ->event($status === 'dibayar' ? 'Pembayaran' : 'PembayaranDibatalkan')
+        ->tap(function ($activity) {
+            $activity->role = auth()->user()?->role;
+            $activity->ip_address = request()->ip();
+            $activity->user_agent = substr((string) request()->userAgent(), 0, 500);
+            $activity->properties = null;
+        })
+        ->log("Pembayaran iuran {$pivot->civilian->full_name} bulan {$monthLabel} ditandai {$status}");
 }
 
     public function render()

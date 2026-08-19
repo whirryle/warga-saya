@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Subscription extends Model
 {
+    use LogsActivity;
     protected $table = 'subscriptions';
     protected $guarded = [];
 
@@ -42,5 +44,10 @@ class Subscription extends Model
         }
         
         return $amount;
+    }
+
+    protected function activityLogName(): string
+    {
+        return 'Iuran';
     }
 }

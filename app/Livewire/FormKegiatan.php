@@ -107,6 +107,18 @@ class FormKegiatan extends Component
 
         session()->flash('success', 'Progress kegiatan berhasil disimpan.');
         $this->resetExcept(['selectedCategory']); // reset semua kecuali kategori
+
+        $civilian = Civilian::find($this->selectedCivilian);
+        activity('Kegiatan')
+            ->causedBy($user)
+            ->event('ProgressKegiatan')
+            ->tap(function ($activity) use ($user) {
+                $activity->role = $user?->role;
+                $activity->ip_address = request()->ip();
+                $activity->user_agent = substr((string) request()->userAgent(), 0, 500);
+                $activity->properties = null;
+            })
+            ->log("Memperbarui progress kegiatan warga " . ($civilian->full_name ?? 'N/A'));
     }
 
     public function render()

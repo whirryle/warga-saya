@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Civilian;
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Category extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
     protected $table = 'categories';
     protected $fillable = [
         'name',
@@ -40,5 +41,10 @@ class Category extends Model
     public function activities(): HasMany
     {
         return $this->hasMany(Activity::class);
+    }
+
+    protected function activityLogName(): string
+    {
+        return 'Kategori';
     }
 }
