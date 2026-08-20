@@ -5,13 +5,22 @@ namespace App\Livewire;
 use App\Models\Expense;
 use Livewire\Component;
 use App\Models\Civilian;
+use Livewire\WithPagination;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\CivilianPivotSubscription;
 
 class PembayaranView extends Component
 {
+    use WithPagination;
+
     public $paymentMonths = [];
+    public $perPage = 10;
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
 
     /**
      * Generate bulan mulai dari tanggal registrasi hingga Desember tahun ini
@@ -94,9 +103,10 @@ class PembayaranView extends Component
 
     public function render()
     {
-        $subscriptions = CivilianPivotSubscription::with(['subscription', 'civilian'])
-            ->get()
-            ->map(function ($subscription) {
+        $paginator = CivilianPivotSubscription::with(['subscription', 'civilian'])
+            ->paginate($this->perPage);
+
+        $raw = collect($paginator->items())->map(function ($subscription) {
                 // Hitung ulang total_paid jika null / potential error
                 if (is_null($subscription->debit)) {
                     $monthlyAmount = (float) preg_replace('/[^0-9]/', '', $subscription->subscription->amount);
@@ -112,7 +122,18 @@ class PembayaranView extends Component
                     )
                 ];
             });
-    
+
+        $subscriptions = new \Illuminate\Pagination\LengthAwarePaginator(
+            $raw->all(),
+            $paginator->total(),
+            $paginator->perPage(),
+            $paginator->currentPage(),
+            [
+                'path'  => request()->url(),
+                'query' => ['perPage' => $this->perPage],
+            ]
+        );
+
         return view('livewire.pembayaran-view', [
             'subscriptions' => $subscriptions
         ]);

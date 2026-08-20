@@ -18,7 +18,6 @@ class KeuanganView extends Component
     public $showExpenseForm = false;
     public $expenseName = '';
     public $expenseAmount = '';
-    public $expenses = []; // Tambah variabel untuk menyimpan data pengeluaran
     public $activeRowId; // Tambahkan ini untuk menyimpan ID baris yang aktif
 
     // Tambahkan property untuk form
@@ -41,7 +40,6 @@ class KeuanganView extends Component
         $this->updateInitialBalance($this->selectedSubscription);
 
         $this->applyFilter();
-        $this->loadExpenses();
     }
 
     private function updateInitialBalance($subscriptionId)
@@ -55,7 +53,6 @@ class KeuanganView extends Component
     {
         $this->updateInitialBalance($this->selectedSubscription);
         $this->applyFilter();
-        $this->loadExpenses();
     }
 
 
@@ -64,6 +61,7 @@ class KeuanganView extends Component
         $this->isLoading = true;
 
         $query = Expense::query()
+            ->with('civilianPivotSubscription.civilian')   // eager-load: hilangkan N+1
             ->when($this->selectedSubscription, fn($q) => $q->where('subscription_id', $this->selectedSubscription))
             ->orderBy('created_at');
 
@@ -101,25 +99,11 @@ class KeuanganView extends Component
         $this->isLoading = false;
     }
 
-    // Method untuk load data pengeluaran
-    public function loadExpenses()
-    {
-        $query = Expense::query()
-            ->when($this->selectedSubscription, fn($q) => $q->where('subscription_id', $this->selectedSubscription));
-
-        $this->expenses = $query->get();
-    }
-
-
     private function calculateCurrentBalance()
     {
         return Expense::where('subscription_id', $this->selectedSubscription)
-            ->get()
-            ->reduce(function ($balance, $expense) {
-                return $expense->is_income 
-                    ? $balance + $expense->amount 
-                    : $balance - $expense->amount;
-            }, 0);
+            ->selectRaw('COALESCE(SUM(CASE WHEN is_income = 1 THEN amount ELSE -amount END), 0) as total')
+            ->value('total');
     }
 
     public function saveInitialBalance()

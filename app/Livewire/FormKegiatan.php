@@ -59,15 +59,16 @@ class FormKegiatan extends Component
                 });
             }
 
-            $this->activities = $query
+            $activities = $query->get();
+
+            // eager-load progress warga ini sekali untuk semua kegiatan (hindari N+1)
+            $progressMap = CivilianPivotActivity::where('civilian_id', $civilian_id)
+                ->whereIn('activity_id', $activities->pluck('id'))
                 ->get()
-                ->map(function($activity) use ($civilian_id) {
-                    $progress = CivilianPivotActivity::where([
-                        'civilian_id' => $civilian_id,
-                        'activity_id' => $activity->id
-                    ])->first();
-                    
-                    $this->progressInputs[$activity->id] = $progress ? $progress->progress : 0;
+                ->pluck('progress', 'activity_id');
+
+            $this->activities = $activities->map(function($activity) use ($progressMap) {
+                    $this->progressInputs[$activity->id] = $progressMap->get($activity->id, 0);
                     
                     return [
                         'id' => $activity->id,

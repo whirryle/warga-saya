@@ -21,8 +21,8 @@ class Category extends Model
 
     public function civilians(): BelongsToMany
     {
-        return $this->belongsToMany(Civilian::class, 'employee_pivot_skills', 'employee_id', 'skill_id');
-    } // potential error
+        return $this->belongsToMany(Civilian::class, 'civilian_pivot_categories', 'category_id', 'civilian_id');
+    }
 
     // public function civilians(): HasMany
     // {

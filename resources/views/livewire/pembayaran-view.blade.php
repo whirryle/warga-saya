@@ -42,6 +42,22 @@
         }
     </style>
 
+    {{-- Per-halaman --}}
+    <div class="mb-4 flex items-center justify-between text-gray-700 dark:text-gray-200">
+        <span class="pagination-info">
+            Menampilkan {{ $subscriptions->firstItem() ?? 0 }}–{{ $subscriptions->lastItem() ?? 0 }} dari {{ $subscriptions->total() }} warga
+        </span>
+        <div class="flex items-center gap-2">
+            <label class="pagination-info">Per halaman:</label>
+            <select wire:model="perPage" class="pagination-select bg-white dark:bg-zinc-700 text-gray-700 dark:text-white">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+        </div>
+    </div>
+
     <div class="overflow-x-auto bg-white dark:bg-zinc-800 rounded-lg shadow relative">
         <!-- Tabel untuk Data civilians -->
         <table class="min-w-full">
@@ -113,6 +129,10 @@
         </table>
     </div>
 
+    <!-- Pagination -->
+    <div class="mt-4 text-gray-700 dark:text-gray-200">
+        {{ $subscriptions->links() }}
+    </div>
 
 
 </div>
